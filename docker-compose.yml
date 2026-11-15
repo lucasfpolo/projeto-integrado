@@ -10,5 +10,8 @@ services:
       MQTT_USE_TLS: ${MQTT_USE_TLS}
       MQTT_TOPIC_PREFIX: ${MQTT_TOPIC_PREFIX}
       PUBLISH_INTERVAL: ${PUBLISH_INTERVAL}
+      MQTT_USERNAME: ${MQTT_USERNAME}
+      MQTT_PASSWORD: ${MQTT_PASSWORD}
+      N_SENSORES: ${N_SENSORES}
     volumes:
       - ./simulator:/app
