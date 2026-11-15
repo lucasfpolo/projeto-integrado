@@ -1,9 +1,30 @@
 services:
+  timescaledb:
+    image: timescale/timescaledb:latest-pg16
+    container_name: timescaledb
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME:-iotdb}
+      POSTGRES_USER: ${DB_USER:-iot_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-iot_password}
+    volumes:
+      - timescaledb_data:/var/lib/postgresql/data
+      - ./timescaledb/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-iot_user} -d ${DB_NAME:-iotdb}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - iot_network
+
   simulator:
     build:
       context: ./simulator
       dockerfile: Dockerfile
-    container_name: data_simulator
+    container_name: iot_simulator
     environment:
       MQTT_BROKER_HOST: ${MQTT_BROKER_HOST}
       MQTT_BROKER_PORT: ${MQTT_BROKER_PORT}
@@ -15,3 +36,12 @@ services:
       N_SENSORES: ${N_SENSORES}
     volumes:
       - ./simulator:/app
+    networks:
+      - iot_network
+
+volumes:
+  timescaledb_data:
+
+networks:
+  iot_network:
+    driver: bridge
