@@ -26,7 +26,7 @@ print(f"Username:    {MQTT_USERNAME}")
 print(f"Sensores:    {N_SENSORES}")
 print("=====================================")
 
-client_id = f"simulador_id"
+client_id = "simulador_id"
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=client_id)
 
 if USE_TLS:
