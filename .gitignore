@@ -53,3 +53,8 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Dados sensíveis
+.env
+__pycache__/
+*.pyc

@@ -1,0 +1,14 @@
+services:
+  simulator:
+    build:
+      context: ./simulator
+      dockerfile: Dockerfile
+    container_name: data_simulator
+    environment:
+      MQTT_BROKER_HOST: ${MQTT_BROKER_HOST}
+      MQTT_BROKER_PORT: ${MQTT_BROKER_PORT}
+      MQTT_USE_TLS: ${MQTT_USE_TLS}
+      MQTT_TOPIC_PREFIX: ${MQTT_TOPIC_PREFIX}
+      PUBLISH_INTERVAL: ${PUBLISH_INTERVAL}
+    volumes:
+      - ./simulator:/app
