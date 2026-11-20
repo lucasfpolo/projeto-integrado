@@ -65,6 +65,28 @@ services:
     networks:
       - pi_network
 
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: temp_fastapi
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-8001}:8000"
+    depends_on:
+      timescaledb:
+        condition: service_healthy
+    environment:
+      DB_HOST: timescaledb
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-iotdb}
+      DB_USER: ${DB_USER:-iot_user}
+      DB_PASSWORD: ${DB_PASSWORD:-iot_password}
+    volumes:
+      - ./api:/app
+    networks:
+      - pi_network
+
 volumes:
   timescaledb_data:
 
