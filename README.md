@@ -86,3 +86,55 @@ A arquitetura do sistema é dividida em quatro módulos funcionais e desacoplado
   * Provê endpoints para consultar o último estado conhecido de um dispositivo específico.
   * Implementa parâmetros de busca para extração de séries temporais com filtros de data inicial, final e paginação.
   * Retorna respostas estruturadas em formato JSON, acompanhadas de rotas de diagnóstico de integridade (*health check*).
+  ---
+
+## 3. Estrutura de Tópicos e Payload
+
+* **Tópico MQTT:** `/{MQTT_TOPIC_PREFIX}/sensores/{sensor_id}/data`
+* **Formato JSON:**
+  ```json
+  {
+    "datetime": "2026-11-20T14:50:00Z",
+    "temperature": 23.45
+  }
+  ```
+
+---
+
+## 4. Endpoints da API REST
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `GET` | `/health` | Verifica a integridade da API e a conexão com o TimescaleDB |
+| `GET` | `/docs` | Documentação interativa Swagger UI |
+| `GET` | `/api/sensors` | Lista todos os sensores de temperatura registrados |
+| `GET` | `/api/sensors/{sensor_id}/data` | Consulta histórico com filtros (`limit`, `start`, `end`, `order`) |
+| `GET` | `/api/sensors/{sensor_id}/latest` | Retorna a última leitura registrada e o total de registros do sensor |
+| `GET` | `/api/summary` | Resumo consolidado de todos os sensores ativos |
+
+---
+
+## 5. Como Executar o Projeto
+
+### Pré-requisitos
+* Docker e Docker Compose instalados.
+* Arquivo `.env` configurado na raiz do projeto contendo:
+  * **Broker MQTT:** `MQTT_BROKER_HOST`, `MQTT_BROKER_PORT`, `MQTT_USERNAME`, `MQTT_PASSWORD`, `MQTT_USE_TLS`, `MQTT_TOPIC_PREFIX`
+  * **Simulador:** `PUBLISH_INTERVAL`, `N_SENSORES`
+  * **Banco e API:** `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_PORT`, `API_PORT`
+
+### Iniciar os serviços
+Na raiz do repositório, execute:
+```bash
+docker compose up -d --build
+```
+
+### Acompanhar os logs em tempo real
+```bash
+docker compose logs -f
+```
+
+### Encerrar os containers
+```bash
+docker compose down
+```
